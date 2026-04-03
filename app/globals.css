@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+
+
+@keyframes vibrate{
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.vibrate:hover{
+    animation: vibrate 3s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.move{
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.move:hover{
+    transform: translateX(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.move:active{
+    transform: translateX(1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.big{
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.big:hover{
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.big:active{
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.big:focus{
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.2);
+    transform: scale(0.95);
+}
+
+.showUp{
+    animation: showUp 0.5s ease-out;
+}
+
+@keyframes showUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.showDown{
+    animation: showDown 0.5s ease-out;
+}
+@keyframes showDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.showBig{
+    transition: transform 1s ease;
+}
+
+.showBig:hover{
+    transform: scale(1.1);
 }
