@@ -1,4 +1,4 @@
-import User from "../../schema/user";
+import User from "../../schema/user.model";
 import { connectDB } from "../../lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";

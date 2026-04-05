@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const complaintSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    issueImg: { type: String },
+    issueImg: [{ type: String }],
 
     status: { 
         type: String, 
@@ -21,10 +21,10 @@ const complaintSchema = new mongoose.Schema({
     clientEmail: { type: String, required: true }
     ,
     // Changed from single role → multiple roles
-    role: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Role" 
-    }],
+    role: { 
+        type: String, 
+        required: true
+    },
 
     formId: {
         type: mongoose.Schema.Types.ObjectId,
