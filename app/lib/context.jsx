@@ -16,8 +16,9 @@ export const UserProvider = ({ children }) => {
         const res = await axios.get("/api/user", {
           withCredentials: true
         });
-        console.log("User Provider Running"+JSON.stringify(res.data.message));
-        if (res.data.success) {
+        console.log("User Provider Running  "+res.data.user);
+        if (res.data.user) {
+          console.log("User found in context: ", res.data.user);
           setUser(res.data.user);
         }
       } catch (error) {

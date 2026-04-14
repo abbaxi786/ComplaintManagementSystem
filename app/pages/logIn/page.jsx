@@ -27,10 +27,6 @@ function LogIn() {
       message:"",
       indicator:""
     });
-    console.log(show);
-
-    
-
 
     async function SubmitLogIn(){
       try {

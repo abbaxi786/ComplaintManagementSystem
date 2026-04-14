@@ -1,65 +1,145 @@
 'use client';
-import React from 'react';
+import React, { useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { UserContext } from '../lib/context';
 import LogOutButton from '../lib/logOut';
 
 function Nav() {
+  const { user, loading } = useContext(UserContext);
 
-  const { user } = React.useContext(UserContext);
-
-  const [show, setShow] = React.useState(false);
-
-  const [showList,setShowList]= React.useState(false);
-
-  React.useEffect(() => {
-    if (user) {
-      setShow(true);
-    } else {
-      setShow(false);
-    }
-  }, [user]);
+  // Avoid rendering until authentication state is determined
+  if (loading) return null;
 
   return (
-    <nav className='flex showDown justify-around text-white bg-emerald-400 p-5 mx-11 rounded-b-2xl'>
-      <Link href="/"><h1 className='font-extrabold text-xl'>Feeder Complaint</h1></Link>
-      <ul className='flex gap-4'>
-        <li>
-          <Link className='hover:underline decoration-emerald-800' href="/">Home</Link>
-        </li>
-        <li>
-          <Link className='hover:underline decoration-emerald-800' href="/contact">Contact</Link>
-        </li>
-        <li>
-          <Link className='hover:underline decoration-emerald-800' href="/about">About</Link>
-        </li>
-        <li>
-          <Image src={'/icons/settingCog.png'} alt="Setting Cog" width={25} height={25} />
-        </li>
+    <div className='md:mx-11 showDown'>
+      <div className="navbar bg-emerald-400 text-white shadow-lg px-4 lg:px-10 rounded-b-2xl">
+        {/* Left Section - Logo */}
+        <div className="navbar-start">
+          {/* Mobile Hamburger */}
+          <div className="dropdown lg:hidden">
+            <label tabIndex={0} className="btn btn-ghost text-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h8m-8 6h16"
+                />
+              </svg>
+            </label>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-white text-black rounded-box w-52"
+            >
+              <li><Link href="/">Home</Link></li>
+              <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/about">About</Link></li>
 
-        {show ? (
-          <li
-            onMouseEnter={() => setShowList(true)}
-            onMouseLeave={() => setShowList(false)}
-            className='relative'
-          >
-            <Image src={'/icons/profile.png'} alt="Profile icon" width={25} height={25} />
-            {showList && (
-              <ul className='absolute bg-white/60 font-bold flex flex-col gap-0.5 p-2 mt-1 rounded shadow-lg z-10'>
-                <li className='rounded px-2 py-0.5 bg-emerald-500 text-white'><Link href={'/pages/sign'}>Register</Link></li>
-                <li className='rounded px-2 py-0.5 text-white bg-amber-300'><Link href={'/pages/logIn'}>LogIn</Link></li>
-                <li className='rounded'><LogOutButton/></li>
+              {/* Auth Options for Mobile */}
+              {!user && (
+                <>
+                  <li><Link href="/pages/sign">Sign Up</Link></li>
+                  <li><Link href="/pages/logIn">Login</Link></li>
+                </>
+              )}
+              {user && (
+                <li>
+                  <LogOutButton />
+                </li>
+              )}
+            </ul>
+          </div>
+
+          {/* Logo */}
+          <Link href="/" className="text-xl font-extrabold">
+            Feeder Complaint
+          </Link>
+        </div>
+
+        {/* Center Section - Desktop Menu */}
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal px-1 gap-2 font-semibold">
+            <li>
+              <Link href="/" className="hover:underline decoration-emerald-800">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:underline decoration-emerald-800">
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="hover:underline decoration-emerald-800">
+                About
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Right Section - Authentication */}
+        <div className="navbar-end">
+          {/* Show Cog Icon ONLY when user is NOT logged in */}
+          {!user && (
+            <div className="dropdown dropdown-end">
+              <label tabIndex={0} className="btn btn-ghost btn-circle">
+                <Image
+                  src="/icons/settingCog.png"
+                  alt="Settings"
+                  width={24}
+                  height={24}
+                />
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-white text-black rounded-box w-40"
+              >
+                <li>
+                  <Link href="/pages/logIn">Login</Link>
+                </li>
+                <li>
+                  <Link href="/pages/sign">Sign Up</Link>
+                </li>
               </ul>
-            )}
-          </li>
-        ) : (
-          <li>
-            <Link className='showBig showDown py-1 px-2 rounded bg-black text-white' href="/pages/logIn">LogIn</Link>
-          </li>
-        )}
-      </ul>
-    </nav>
+            </div>
+          )}
+
+          {/* Show Profile Dropdown ONLY when user IS logged in */}
+          {user && (
+            <div className="dropdown dropdown-end">
+              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                <div className="w-10 rounded-full bg-white p-1">
+                  <Image
+                    src="/icons/profile.png"
+                    alt="Profile"
+                    width={32}
+                    height={32}
+                  />
+                </div>
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-white text-black rounded-box w-40"
+              >
+                <li className="px-2 py-1 text-sm text-gray-500">
+                  {user?.email}
+                </li>
+                <li>
+                  <LogOutButton />
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

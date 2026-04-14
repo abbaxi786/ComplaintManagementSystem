@@ -77,7 +77,7 @@ export async function POST(request) {
       }
 
       const token = jwt.sign(
-        { id: user._id, email: user.email },
+        { _id: user._id, email: user.email },
         process.env.jwtTokenSecret,
         { expiresIn: "1d" }
       );
@@ -94,8 +94,9 @@ export async function POST(request) {
         httpOnly: true,              // prevent JS access (security)
         secure: process.env.NODE_ENV === "production",  // only HTTPS in production
         sameSite: "lax",             // protect CSRF
-        path: "/",                   // available throughout site
-        maxAge: 60 * 60 * 24,        // 1 day
+           // available throughout site
+        maxAge: 60 * 60 * 24 * 7,        // 7 days
+
       });
 
       return response;
@@ -141,9 +142,8 @@ export async function GET(req) {
     }
 
     const decoded = jwt.verify(token, process.env.jwtTokenSecret);
-    console.log("The decoded "+JSON.stringify(decoded));
+    // console.log("The decoded "+JSON.stringify(decoded));
     return NextResponse.json({
-      success: true,
       user: decoded
     });
 

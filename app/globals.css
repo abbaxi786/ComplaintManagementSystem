@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@plugin "daisyui";
 
 
 
@@ -67,7 +67,7 @@
 @keyframes showDown {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(-30px);
     }
     to {
         opacity: 1;
@@ -81,4 +81,17 @@
 
 .showBig:hover{
     transform: scale(1.1);
+}
+
+.fadeUp{
+    animation: fadeUp 1.5s ease-out;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
 }

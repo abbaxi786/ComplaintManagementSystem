@@ -1,35 +1,30 @@
 import { connectDB } from "@/app/lib/db";
-import Complaints from "@/app/schema/complaints.model";
 import ComplaintForm from "@/app/schema/ComplaintForm.model";
-// import { GetSchemaField } from "../route.js";
+import complaints from "@/app/schema/complaints.model";
 
 export async function GET(request, { params }) {
-    try {
-        await connectDB();
+    try{
 
-        const { publicLink } = await params;
+        await connectDB();
+        
+        const { complaintid } = await params;
+        const publicLink = complaintid;
         const complaintForm = await ComplaintForm.findOne(
             { publicLink },
-            { _id: 1 }
+            { _id: 1 },
+            {role: 1 }
         );
-
-
+        console.log("Fetched complaint form: ", complaintForm);
         if (!complaintForm) {
             return new Response(JSON.stringify({ error: "Form not found" }), { status: 404 });
         }
 
-        const complaints = await Complaints.find({
-            formId: complaintForm._id
-        });
-
-        console.log("Fetched complaints for form:", complaints);
-
-        // let fields = GetSchemaField();
-
-        return new Response(
-            JSON.stringify({ complaints}),
-            { status: 200 }
-        );
+        if (complaintForm) {
+            return new Response(
+                JSON.stringify({ complaintForm}),
+                { status: 200 }
+            );
+        }
 
     } catch (error) {
         console.error("Error:", error);
@@ -38,4 +33,6 @@ export async function GET(request, { params }) {
             { status: 500 }
         );
     }
+
 }
+

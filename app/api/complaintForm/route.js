@@ -33,21 +33,3 @@ export async function POST(request) {
 }
 
 
-// export async function GetSchemaField(){
-//     const fields = Object.keys(complaints.schema.objectPaths).filter(field => !["_id", "__v"].includes(field));
-//     return fields;
-// }
-
-export function GetSchemaField() {
-    const paths = complaints.schema.paths;
-    const fieldsWithTypes = {};
-
-    for (const field in paths) {
-        if (!["_id", "__v"].includes(field)) {
-            fieldsWithTypes[field] = paths[field].instance;
-        }
-    }
-
-    return fieldsWithTypes;
-}
-
