@@ -20,7 +20,6 @@ const complaintSchema = new mongoose.Schema({
     ,
     clientEmail: { type: String, required: true }
     ,
-    // Changed from single role → multiple roles
     role: { 
         type: String, 
         required: true

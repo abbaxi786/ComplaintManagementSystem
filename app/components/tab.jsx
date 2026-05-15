@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 function Tabs({ ComplaintForm = [] ,message}) {
   const [tabData, setTabData] = useState(null);
+  const websiteUrlForComplaint = process.env.websiteUrlForComplaint || 'http://localhost:3000/pages/forms/';
 
   useEffect(() => {
     function setDefaultTab() {
@@ -16,7 +17,7 @@ function Tabs({ ComplaintForm = [] ,message}) {
 
   const handleCopyLink = () => {
     if (tabData?.publicLink) {
-      navigator.clipboard.writeText(tabData.publicLink);
+      navigator.clipboard.writeText(websiteUrlForComplaint+tabData.publicLink);
       alert('Public link copied!');
     }
   };
@@ -31,14 +32,14 @@ function Tabs({ ComplaintForm = [] ,message}) {
 
   return (
     <div className="w-full mb-5 showUp">
-      <div role="tablist" className="tabs tabs-box">
+      <div role="tablist" className="tabs tabs-box ">
         {ComplaintForm.map((complaint) => (
           <button
             key={complaint._id}
             role="tab"
             className={`tab ${
               tabData?._id === complaint._id ? 'tab-active' : ''
-            }`}
+            } w-full sm:w-auto`}
             onClick={() => setTabData(complaint)}
           >
             {complaint.title}
@@ -53,12 +54,12 @@ function Tabs({ ComplaintForm = [] ,message}) {
 
           <div>
             <h1 className="text-2xl font-bold my-3 text-purple-700">Complaint For</h1>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {tabData.role?.map((role) => (
-              <span key={role} className="badge badge-primary">
-                {role}
-              </span>
-            ))}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {tabData.role?.map((role) => (
+                <span key={role} className="badge badge-primary">
+                  {role}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -69,11 +70,11 @@ function Tabs({ ComplaintForm = [] ,message}) {
               : 'N/A'}
           </p>
 
-          <div className="bg-zinc-800 p-4 rounded-md mt-4">
-            <p className="break-all">{tabData.publicLink}</p>
+          <div className="bg-zinc-800 p-4 rounded-md mt-4 flex gap-2 sm:flex-row flex-col justify-between items-center">
+            <p className="break-all text-gray-500 text-center">{websiteUrlForComplaint + tabData.publicLink}</p>
             <button
               onClick={handleCopyLink}
-              className="btn btn-sm btn-outline mt-2"
+              className="btn btn-primary"
             >
               Copy Link
             </button>

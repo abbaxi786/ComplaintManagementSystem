@@ -5,60 +5,187 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 
 export default function GetComplaintForms() {
-    const { getforms } = useParams(); // Access dynamic route parameter
-    const [forms, setForms] = useState([]);
+
+    const { getforms } = useParams();
+
+    const [forms, setForms] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [sendingData, setSendingData] = useState({
+        title: '',
+        description: '',
+        phoneNumber: '',
+        clientEmail: '',
+        role: '',
+        formId: ''
+    });
+
+    // FETCH FORM DATA
     useEffect(() => {
-        console.log("Fetching complaint forms for: ", getforms);
+
         if (!getforms) return;
 
         const fetchData = async () => {
+
             try {
+
                 const response = await axios.get(`/api/info/${getforms}`);
-                setForms(response.data);
-                console.log("Fetched forms: ", response.data);
+
+                const formData = response.data.data;
+
+                setForms(formData);
+
+                // 🔥 IMPORTANT FIX: use MongoDB _id
+                setSendingData((prev) => ({
+                    ...prev,
+                    formId: formData._id
+                }));
+
             } catch (err) {
+
                 console.error(err);
                 setError('Failed to fetch complaint forms.');
+
             } finally {
                 setLoading(false);
             }
         };
+
         fetchData();
+
     }, [getforms]);
 
-    if (loading) {
-        return <p className="text-center mt-10">Loading...</p>;
-    }
+    // INPUT HANDLER
+    const handleChange = (e) => {
 
-    if (error) {
-        return <p className="text-center mt-10 text-red-500">{error}</p>;
-    }
+        const { name, value } = e.target;
+
+        setSendingData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+
+    };
+
+    // SUBMIT FORM
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        try {
+
+            const response = await axios.post(
+                '/api/info',
+                sendingData
+            );
+
+            console.log(response.data);
+
+            alert('Complaint submitted successfully');
+
+            setSendingData({
+                title: '',
+                description: '',
+                phoneNumber: '',
+                clientEmail: '',
+                role: '',
+                formId: forms._id
+            });
+
+        } catch (error) {
+
+            console.error(error);
+            alert('Failed to submit complaint');
+
+        }
+    };
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p className="text-red-500">{error}</p>;
 
     return (
-        <div className="max-w-4xl mx-auto mt-10 p-6 rounded-md hover:shadow-zinc-700 shadow-lg showUp">
-            <h1 className="text-2xl font-bold mb-4">
-                Complaint Forms for Portal ID: {getforms}
+
+        <div className="max-w-4xl mx-auto mt-10 p-6 shadow-lg">
+
+            <h1 className="text-2xl font-bold mb-2">
+                {forms?.title}
             </h1>
 
-            {forms.length === 0 ? (
-                <p>No complaint forms found.</p>
-            ) : (
-                <form className="space-y-4">
-                    <input type='text' placeholder='title'/>
-                    <textarea placeholder='description' className='w-full h-32'/>
-                    <input type='text' placeholder='phone number'/>
-                    <input type='email' placeholder='email'/>
-                    {/* <select for="role">
-                        {forms.role.map((items, index) => (
-                            <option key={index} value={items}>{items}</option>
-                        ))}
-                    </select> */}
-                    <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit Complaint</button>
-                </form>
-            )}
+            <p className="mb-4">
+                {forms?.description}
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+
+                {/* Title */}
+                <input
+                    name="title"
+                    value={sendingData.title}
+                    onChange={handleChange}
+                    placeholder="Complaint Title"
+                    className="input input-bordered w-full"
+                    required
+                />
+
+                {/* Description */}
+                <textarea
+                    name="description"
+                    value={sendingData.description}
+                    onChange={handleChange}
+                    placeholder="Complaint Description"
+                    className="textarea textarea-bordered w-full"
+                    required
+                />
+
+                {/* Phone + Email */}
+                <input
+                    name="phoneNumber"
+                    value={sendingData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="Phone Number"
+                    className="input input-bordered w-full"
+                    required
+                />
+
+                <input
+                    name="clientEmail"
+                    value={sendingData.clientEmail}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    className="input input-bordered w-full"
+                    required
+                />
+
+                {/* ROLE */}
+                <select
+                    name="role"
+                    value={sendingData.role}
+                    onChange={handleChange}
+                    className="select select-bordered w-full"
+                    required
+                >
+
+                    <option value="">Select Role</option>
+
+                    {forms?.role?.map((r, i) => (
+                        <option key={i} value={r}>
+                            {r}
+                        </option>
+                    ))}
+
+                </select>
+
+                {/* SUBMIT */}
+                <button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                    Submit Complaint
+                </button>
+
+            </form>
+
         </div>
     );
 }

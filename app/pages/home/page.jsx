@@ -13,12 +13,9 @@ function LandingPage() {
   const [data, setData] = useState([]);
   const [logInMessage, setLogInMessage] = useState('');
 
-  // Fetch user complaints and handle authentication
   useEffect(() => {
-    // Wait until authentication status is determined
     if (loading) return;
 
-    // Redirect to login if user is not authenticated
     if (!user || !(user._id || user.id)) {
       router.replace('/pages/logIn'); // Use replace to prevent back navigation
       return;
@@ -40,7 +37,6 @@ function LandingPage() {
     fetchData();
   }, [user, loading, router]);
 
-  // Optional loading spinner while checking authentication
   if (loading) {
     return (
       <div className="mt-20 flex justify-center">
@@ -50,17 +46,15 @@ function LandingPage() {
   }
 
   return (
-    <div className="mt-11 flex flex-col gap-4 px-4 md:px-0">
-      {/* Create Complaint Portal Button */}
+    <div className="mt-11 flex flex-col gap-4 px-0 sm:px-4 md:px-0">
       <div className="flex justify-end">
         <Link href="/pages/createportal">
-          <button className="btn bg-white text-emerald-800 hover:bg-emerald-100 transition-colors">
+          <button className="btn btn-wide  bg-white block text-emerald-800 hover:bg-emerald-100 transition-colors">
             Create Complaint Portal
           </button>
         </Link>
       </div>
 
-      {/* Tabs Component */}
       <Tabs ComplaintForm={data} message={logInMessage} />
     </div>
   );
